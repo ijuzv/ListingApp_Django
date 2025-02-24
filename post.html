@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Vehicle - Markerune</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Navbar Styling */
+        .header-wrapper {
+            background-color: #000;
+            padding: 10px 0;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #f4f4f4;
+        }
+
+        /* Form Container */
+        .container {
+            width: 50%;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-wrapper">
+        <div class="navbar">
+            <div class="logo">Markerune</div>
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="post">Post</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Post Your Vehicle</h1>
+        <form method="POST" enctype="multipart/form-data" action="{% url 'post' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="product_type">Product Type:</label>
+                <select name="product_type" id="product_type" required>
+                    <option value="">-- Select Type --</option>
+                    <option value="Car">Car</option>
+                    <option value="Bike">Bike</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="brand">Brand:</label>
+                <select name="brand" id="brand" required>
+                    <option value="">-- Select Brand --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="model_year">Model Year:</label>
+                <select name="model_year" id="model_year" required>
+                    <option value="">-- Select Year --</option>
+                    {% for year in years %}
+                    <option value="{{ year }}">{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fuel_type">Fuel Type:</label>
+                <select name="fuel_type" id="fuel_type" required>
+                    <option value="">-- Select Fuel Type --</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Electric">Electric</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="km_driven">Kilometers Driven:</label>
+                <input type="number" name="km_driven" id="km_driven" required>
+            </div>
+
+            <div class="form-group">
+                <label for="images">Upload Images:</label>
+                <input type="file" name="images" id="images" accept="image/*" multiple required>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" name="title" id="title" placeholder="Enter a catchy title">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea name="description" id="description" rows="3" placeholder="Describe the vehicle"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price (in ₹):</label>
+                <input type="number" name="price" id="price" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="owners">Number of Owners:</label>
+                <input type="number" name="owners" id="owners" required>
+            </div>
+
+            <div class="form-group">
+                <label for="insurance">Insurance Available?</label>
+                <input type="checkbox" name="insurance" id="insurance">
+            </div>
+
+            <button type="submit">Post Vehicle</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleFields() {
+            const productType = document.getElementById('product_type').value;
+            const brandSelect = document.getElementById('brand');
+
+            // Clear existing options
+            brandSelect.innerHTML = '<option value="">-- Select Brand --</option>';
+
+            // Define brands based on product type
+            const brands = {
+                'Car': ["Toyota", "Honda", "Ford", "BMW", "Audi", "Mercedes"],
+                'Bike': ["Yamaha", "Honda", "Suzuki", "Kawasaki", "Ducati", "Royal Enfield"]
+            };
+
+            // Add new options
+            if (brands[productType]) {
+                brands[productType].forEach(brand => {
+                    const option = document.createElement("option");
+                    option.value = brand;
+                    option.textContent = brand;
+                    brandSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Run function when product type changes
+        document.getElementById('product_type').addEventListener('change', toggleFields);
+        window.onload = toggleFields;
+    </script>
+</body>
+</html>

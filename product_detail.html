@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .product-container {
+            display: flex;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        .product-image {
+            flex: 1;
+            padding: 10px;
+        }
+        .product-image img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 5px;
+        }
+        .product-details {
+            flex: 2;
+            padding: 10px;
+        }
+        .product-details h2 {
+            margin-top: 0;
+        }
+        .product-details p {
+            font-size: 16px;
+            color: #555;
+        }
+        .price {
+            font-size: 24px;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .back-link {
+            text-decoration: none;
+            color: #007bff;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="product-container">
+        <div class="product-image">
+            {% if product.images.all %}
+                <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
+            {% else %}
+                <img src="default_image.jpg" alt="No image available">
+            {% endif %}
+        </div>
+        <div class="product-details">
+            <h2>{{ product.title }}</h2>
+            <p>{{ product.description }}</p>
+            <p class="price">Price: ₹{{ product.price }}</p>
+            <p><strong>Brand:</strong> {{ product.brand }}</p>
+            <p><strong>Year:</strong> {{ product.model_year }}</p>
+            <p><strong>Fuel Type:</strong> {{ product.fuel_type }}</p>
+            <p><strong>KM Driven:</strong> {{ product.km_driven }}</p>
+            <p><strong>Owners:</strong> {{ product.owners }}</p>
+            <p><strong>Insurance:</strong> {% if product.insurance %}Yes{% else %}No{% endif %}</p>
+            <p>Added on: {{ product.created_at|date:"d M Y" }}</p>
+        </div>
+    </div>
+
+</body>
+</html>
